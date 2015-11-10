@@ -10,12 +10,17 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
+    
+    @IBOutlet var tableView : UITableView!
+    let basicCellIdentifier = "BasicCell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         NSLog("hi")
         // Do any additional setup after loading the view, typically from a nib.
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -45,6 +50,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         self.locations.appendContentsOf(locations)
         for loc in locations {
             NSLog("New location is %@", loc)
+            self.tableView.reloadData()
         }
     }
     
@@ -54,6 +60,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             //user denied location services so stop updating manager
             manager.stopUpdatingLocation()
         }
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return locations.count
+        
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = self.tableView.dequeueReusableCellWithIdentifier(basicCellIdentifier) as! BasicCell
+        cell.timeLabel.text = String(format: "%@", arguments: [locations[indexPath.row].timestamp])
+        cell.locationlabel.text = String(format: "%.4f, %.4f", arguments: [locations[indexPath.row].coordinate.latitude, locations[indexPath.row].coordinate.longitude])
+        return cell
     }
     
 }

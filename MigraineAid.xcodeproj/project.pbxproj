@@ -16,6 +16,7 @@
 		AFBBD6341BF2782800FEA336 /* MigraineAidTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBBD6331BF2782800FEA336 /* MigraineAidTests.swift */; };
 		AFBBD63F1BF2782800FEA336 /* MigraineAidUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBBD63E1BF2782800FEA336 /* MigraineAidUITests.swift */; };
 		AFBBD64D1BF278B100FEA336 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD64C1BF278B100FEA336 /* CoreData.framework */; };
+		AFBBD6511BF2844C00FEA336 /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBBD6501BF2844C00FEA336 /* BasicCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		AFBBD63E1BF2782800FEA336 /* MigraineAidUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigraineAidUITests.swift; sourceTree = "<group>"; };
 		AFBBD6401BF2782800FEA336 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AFBBD64C1BF278B100FEA336 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AFBBD6501BF2844C00FEA336 /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 				AFBBD6271BF2782800FEA336 /* LaunchScreen.storyboard */,
 				AFBBD62A1BF2782800FEA336 /* Info.plist */,
 				AFBBD6221BF2782800FEA336 /* MigraineAid.xcdatamodeld */,
+				AFBBD6501BF2844C00FEA336 /* BasicCell.swift */,
 			);
 			path = MigraineAid;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AFBBD6511BF2844C00FEA336 /* BasicCell.swift in Sources */,
 				AFBBD61E1BF2782800FEA336 /* ViewController.swift in Sources */,
 				AFBBD6241BF2782800FEA336 /* MigraineAid.xcdatamodeld in Sources */,
 				AFBBD61C1BF2782800FEA336 /* AppDelegate.swift in Sources */,
@@ -492,6 +496,7 @@
 				AFBBD6451BF2782800FEA336 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AFBBD6461BF2782800FEA336 /* Build configuration list for PBXNativeTarget "MigraineAidTests" */ = {
 			isa = XCConfigurationList;
@@ -500,6 +505,7 @@
 				AFBBD6481BF2782800FEA336 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AFBBD6491BF2782800FEA336 /* Build configuration list for PBXNativeTarget "MigraineAidUITests" */ = {
 			isa = XCConfigurationList;
@@ -508,6 +514,7 @@
 				AFBBD64B1BF2782800FEA336 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
