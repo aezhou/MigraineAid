@@ -9,6 +9,7 @@
 import UIKit
 import CoreLocation
 import MapKit
+import Parse
 
 class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     
@@ -17,10 +18,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NSLog("hi")
         // Do any additional setup after loading the view, typically from a nib.
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
     override func didReceiveMemoryWarning() {
@@ -39,9 +39,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     }()
     
     override func viewWillAppear(animated: Bool) {
-        NSLog("about to appear")
         if CLLocationManager.locationServicesEnabled() {
-            NSLog("location services on")
             locationManager.startMonitoringSignificantLocationChanges()
         }
     }
@@ -51,6 +49,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         for loc in locations {
             NSLog("New location is %@", loc)
             self.tableView.reloadData()
+            let locationObject = PFObject(className: "LocationObject")
+            locationObject["timestamp"] = loc.timestamp
+            locationObject["longitude"] = loc.coordinate.latitude
+            locationObject["latitude"] = loc.coordinate.longitude
+            locationObject["course"] = loc.course
+            locationObject["speed"] = loc.speed
+            // don't know how to get accuracy of measurement even though it is a property
+//            locationObject.saveInBackgroundWithBlock {
+//                (success: Bool, error: NSError?) -> Void in
+//                if (success) {
+//                    // successful!
+//                } else {
+//                    //there was an error... deal with types of errors
+//                }
+//                
+//            }
+            locationObject.saveEventually()
         }
     }
     

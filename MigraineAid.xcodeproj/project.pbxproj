@@ -17,6 +17,17 @@
 		AFBBD63F1BF2782800FEA336 /* MigraineAidUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBBD63E1BF2782800FEA336 /* MigraineAidUITests.swift */; };
 		AFBBD64D1BF278B100FEA336 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD64C1BF278B100FEA336 /* CoreData.framework */; };
 		AFBBD6511BF2844C00FEA336 /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBBD6501BF2844C00FEA336 /* BasicCell.swift */; };
+		AFBBD6541BF28E9D00FEA336 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD6521BF28E9D00FEA336 /* Bolts.framework */; };
+		AFBBD6551BF28E9D00FEA336 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD6531BF28E9D00FEA336 /* Parse.framework */; };
+		AFBBD65F1BF28EF600FEA336 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD6561BF28EF600FEA336 /* AudioToolbox.framework */; };
+		AFBBD6601BF28EF600FEA336 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD6571BF28EF600FEA336 /* CFNetwork.framework */; };
+		AFBBD6611BF28EF600FEA336 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD6581BF28EF600FEA336 /* CoreGraphics.framework */; };
+		AFBBD6621BF28EF600FEA336 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD6591BF28EF600FEA336 /* libsqlite3.tbd */; };
+		AFBBD6631BF28EF600FEA336 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD65A1BF28EF600FEA336 /* libz.tbd */; };
+		AFBBD6641BF28EF600FEA336 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD65B1BF28EF600FEA336 /* QuartzCore.framework */; };
+		AFBBD6651BF28EF600FEA336 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD65C1BF28EF600FEA336 /* Security.framework */; };
+		AFBBD6661BF28EF600FEA336 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD65D1BF28EF600FEA336 /* StoreKit.framework */; };
+		AFBBD6671BF28EF600FEA336 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFBBD65E1BF28EF600FEA336 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +64,17 @@
 		AFBBD6401BF2782800FEA336 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AFBBD64C1BF278B100FEA336 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		AFBBD6501BF2844C00FEA336 /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
+		AFBBD6521BF28E9D00FEA336 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		AFBBD6531BF28E9D00FEA336 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		AFBBD6561BF28EF600FEA336 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		AFBBD6571BF28EF600FEA336 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		AFBBD6581BF28EF600FEA336 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		AFBBD6591BF28EF600FEA336 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		AFBBD65A1BF28EF600FEA336 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		AFBBD65B1BF28EF600FEA336 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		AFBBD65C1BF28EF600FEA336 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		AFBBD65D1BF28EF600FEA336 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		AFBBD65E1BF28EF600FEA336 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +82,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AFBBD65F1BF28EF600FEA336 /* AudioToolbox.framework in Frameworks */,
+				AFBBD6601BF28EF600FEA336 /* CFNetwork.framework in Frameworks */,
+				AFBBD6611BF28EF600FEA336 /* CoreGraphics.framework in Frameworks */,
+				AFBBD6621BF28EF600FEA336 /* libsqlite3.tbd in Frameworks */,
+				AFBBD6631BF28EF600FEA336 /* libz.tbd in Frameworks */,
+				AFBBD6641BF28EF600FEA336 /* QuartzCore.framework in Frameworks */,
+				AFBBD6651BF28EF600FEA336 /* Security.framework in Frameworks */,
+				AFBBD6661BF28EF600FEA336 /* StoreKit.framework in Frameworks */,
+				AFBBD6671BF28EF600FEA336 /* SystemConfiguration.framework in Frameworks */,
 				AFBBD64D1BF278B100FEA336 /* CoreData.framework in Frameworks */,
+				AFBBD6551BF28E9D00FEA336 /* Parse.framework in Frameworks */,
+				AFBBD6541BF28E9D00FEA336 /* Bolts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,7 +117,7 @@
 		AFBBD60F1BF2782800FEA336 = {
 			isa = PBXGroup;
 			children = (
-				AFBBD64C1BF278B100FEA336 /* CoreData.framework */,
+				AFBBD6681BF28F0E00FEA336 /* Frameworks */,
 				AFBBD61A1BF2782800FEA336 /* MigraineAid */,
 				AFBBD6321BF2782800FEA336 /* MigraineAidTests */,
 				AFBBD63D1BF2782800FEA336 /* MigraineAidUITests */,
@@ -133,6 +166,33 @@
 				AFBBD6401BF2782800FEA336 /* Info.plist */,
 			);
 			path = MigraineAidUITests;
+			sourceTree = "<group>";
+		};
+		AFBBD6681BF28F0E00FEA336 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AFBBD6691BF28F3000FEA336 /* Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AFBBD6691BF28F3000FEA336 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AFBBD6561BF28EF600FEA336 /* AudioToolbox.framework */,
+				AFBBD6571BF28EF600FEA336 /* CFNetwork.framework */,
+				AFBBD6581BF28EF600FEA336 /* CoreGraphics.framework */,
+				AFBBD6591BF28EF600FEA336 /* libsqlite3.tbd */,
+				AFBBD65A1BF28EF600FEA336 /* libz.tbd */,
+				AFBBD65B1BF28EF600FEA336 /* QuartzCore.framework */,
+				AFBBD65C1BF28EF600FEA336 /* Security.framework */,
+				AFBBD65D1BF28EF600FEA336 /* StoreKit.framework */,
+				AFBBD65E1BF28EF600FEA336 /* SystemConfiguration.framework */,
+				AFBBD6521BF28E9D00FEA336 /* Bolts.framework */,
+				AFBBD6531BF28E9D00FEA336 /* Parse.framework */,
+				AFBBD64C1BF278B100FEA336 /* CoreData.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -411,6 +471,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = MigraineAid/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.aezhou.MigraineAid;
@@ -422,6 +486,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = MigraineAid/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.aezhou.MigraineAid;
