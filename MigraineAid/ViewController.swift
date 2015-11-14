@@ -15,6 +15,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     
     @IBOutlet var tableView : UITableView!
     let basicCellIdentifier = "BasicCell"
+
+    
+    var locations = [CLLocation]()
+    
+    lazy var locationManager: CLLocationManager! = {
+        let manager = CLLocationManager()
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.delegate = self
+        manager.requestAlwaysAuthorization()
+        return manager
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,20 +39,27 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         // Dispose of any resources that can be recreated.
     }
     
-    var locations = [CLLocation]()
-    
-    lazy var locationManager: CLLocationManager! = {
-        let manager = CLLocationManager()
-        manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.delegate = self
-        manager.requestAlwaysAuthorization()
-        return manager
-    }()
-    
     override func viewWillAppear(animated: Bool) {
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.startMonitoringSignificantLocationChanges()
+        if (PFUser.currentUser() == nil) {
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("Login")
+                self.presentViewController(loginVC, animated: false, completion: nil)
+            })
+        } else {
+            if CLLocationManager.locationServicesEnabled() {
+                locationManager.startMonitoringSignificantLocationChanges()
+            }
         }
+    }
+    
+    @IBAction func signOutTapped(sender: UIButton) {
+        // Send a request to log out a user
+        PFUser.logOut()
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            let viewController:UIViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("Login")
+            self.presentViewController(viewController, animated: true, completion: nil)
+        })
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
