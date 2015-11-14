@@ -65,15 +65,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         self.locations.appendContentsOf(locations)
         for loc in locations {
-            NSLog("New location is %@", loc)
             self.tableView.reloadData()
             let locationObject = PFObject(className: "LocationObject")
+            locationObject["user"] = PFUser.currentUser()
             locationObject["timestamp"] = loc.timestamp
-            locationObject["longitude"] = loc.coordinate.latitude
-            locationObject["latitude"] = loc.coordinate.longitude
+            locationObject["geopoint"] = PFGeoPoint(location: loc)
+//            locationObject["longitude"] = loc.coordinate.latitude
+//            locationObject["latitude"] = loc.coordinate.longitude
+            locationObject["horizontal_accuracy"] = loc.horizontalAccuracy
             locationObject["course"] = loc.course
             locationObject["speed"] = loc.speed
-            // don't know how to get accuracy of measurement even though it is a property
+            
 //            locationObject.saveInBackgroundWithBlock {
 //                (success: Bool, error: NSError?) -> Void in
 //                if (success) {
