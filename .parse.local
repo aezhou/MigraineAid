@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "MigraineAid": {
+      "applicationId": "RPEelxnIRofOu7fHaBBV1OjZNPESu9cjWIvu2NeB"
+    },
+    "_default": {
+      "link": "MigraineAid"
+    }
+  }
+}
