@@ -16,6 +16,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     @IBOutlet var tableView : UITableView!
     let basicCellIdentifier = "BasicCell"
 
+    let healthManager:HealthManager = HealthManager()
     
     var locations = [CLLocation]()
     
@@ -107,6 +108,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         cell.timeLabel.text = String(format: "%@", arguments: [locations[indexPath.row].timestamp])
         cell.locationlabel.text = String(format: "%.4f, %.4f", arguments: [locations[indexPath.row].coordinate.latitude, locations[indexPath.row].coordinate.longitude])
         return cell
+    }
+    
+    func authorizeHealthKit() {
+        healthManager.authorizeHealthKit({ (authorized, error) -> Void in
+            if authorized {
+                //
+            } else {
+                //
+            }
+        })
     }
     
 }
