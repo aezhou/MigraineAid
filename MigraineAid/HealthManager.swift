@@ -10,7 +10,13 @@ import Foundation
 import HealthKit
 
 class HealthManager {
-    let storage = HKHealthStore()
+    let healthStore: HKHealthStore? = {
+        if HKHealthStore.isHealthDataAvailable() {
+            return HKHealthStore()
+        } else {
+            return nil
+        }
+    }()
     
     func authorizeHealthKit(completion: ((success:Bool, error:NSError!) -> Void)!)
     {
@@ -26,7 +32,7 @@ class HealthManager {
             return;
         }
         
-        storage.requestAuthorizationToShareTypes(nil, readTypes: healthKitTypesToRead) { (success, error) -> Void in
+        healthStore!.requestAuthorizationToShareTypes(nil, readTypes: healthKitTypesToRead) { (success, error) -> Void in
             if( completion != nil ) {
                 completion(success:success,error:error)
             }
