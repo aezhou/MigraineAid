@@ -35,6 +35,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
     }
     
+    override func viewDidAppear(animated: Bool) {
+        if (PFUser.currentUser() != nil) {
+            healthManager.authorizeHealthKit { (authorized,  error) -> Void in
+                if authorized {
+                    print("HealthKit authorization received.")
+                } else {
+                    print("HealthKit authorization denied!")
+                    print("error: %@", error)
+                }
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -109,17 +122,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         cell.locationlabel.text = String(format: "%.4f, %.4f", arguments: [locations[indexPath.row].coordinate.latitude, locations[indexPath.row].coordinate.longitude])
         return cell
     }
-    
-    func authorizeHealthKit() {
-        healthManager.authorizeHealthKit({ (authorized, error) -> Void in
-            if authorized {
-                //
-            } else {
-                //
-            }
-        })
-    }
-    
+
 }
 
 
