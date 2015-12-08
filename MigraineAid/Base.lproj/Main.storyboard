@@ -65,11 +65,21 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="N2z-Hn-3Ff"/>
                                 </connections>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZyL-u6-zGR">
+                                <rect key="frame" x="371" y="72" width="218" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Send last 24 hrs steps to server"/>
+                                <connections>
+                                    <action selector="sendStepData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ljk-rK-b1d"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="leadingMargin" secondItem="jnp-qv-ARE" secondAttribute="leading" id="9y9-xK-slb"/>
+                            <constraint firstItem="ZyL-u6-zGR" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="C9O-bR-sbH"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ZyL-u6-zGR" secondAttribute="trailing" constant="-9" id="MBf-Wt-JB3"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="jnp-qv-ARE" secondAttribute="bottom" constant="8" id="ZsE-oq-fPX"/>
                             <constraint firstAttribute="trailingMargin" secondItem="jnp-qv-ARE" secondAttribute="trailing" id="fXc-Eh-7se"/>
                             <constraint firstItem="jnp-qv-ARE" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="mTE-bP-P4K"/>

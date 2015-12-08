@@ -42,7 +42,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                     print("HealthKit authorization received.")
                 } else {
                     print("HealthKit authorization denied!")
-                    print("error: %@", error)
+                    print("error: ", error)
                 }
             }
         }
@@ -108,6 +108,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         if error.domain == kCLErrorDomain && CLError(rawValue: error.code) == CLError.Denied {
             //user denied location services so stop updating manager
             manager.stopUpdatingLocation()
+        }
+    }
+    
+    @IBAction func sendStepData(sender: AnyObject) {
+        healthManager.recentSteps() { results, error in
+            if results?.count > 0 {
+                var stepObjects = [PFObject]()
+                for result in results! {
+                    let stepObject = PFObject(className: "StepObject")
+                    stepObject["user"] = PFUser.currentUser()
+                    stepObject["timestamp"] = result.startDate
+                    stepObject["quantity"] = result.quantity as Int
+
+                    stepObjects.append(stepObject)
+                }
+                PFObject.saveAllInBackground(stepObjects)
+            } else {
+                print("no steps!");
+                print("error: ", error);
+            }
         }
     }
     

@@ -38,4 +38,49 @@ class HealthManager {
             }
         }
     }
+    
+    func recentSteps(completion: ([HKQuantitySample]?, NSError?) -> () )
+    {
+        // The type of data we are requesting (this is redundant and could probably be an enumeration
+        let type = HKSampleType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)
+        let endDate = NSDate()
+        let startDate = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -1, toDate: endDate, options: [])
+        
+        // Our search predicate which will fetch data from now until a day ago
+        // (Note, 1.day comes from an extension
+        // You'll want to change that to your own NSDate
+        let predicate = HKQuery.predicateForSamplesWithStartDate(startDate, endDate: NSDate(), options: .None)
+        
+        // The actual HealthKit Query which will fetch all of the steps and sub them up for us.
+        if let stepType = type {
+            let query = HKSampleQuery(sampleType: stepType, predicate: predicate, limit: 0, sortDescriptors: nil) { query, results, error in
+                completion(results as? [HKQuantitySample], error)
+            }
+            self.healthStore?.executeQuery(query)
+        }
+        
+    }
+    
+//    func perfromQueryForWeightSamples() {
+//        let endDate = NSDate()
+//        let startDate = NSCalendar.currentCalendar().dateByAddingUnit(.Month,
+//            value: -2, toDate: endDate, options: [])
+//        
+//        let weightSampleType = HKSampleType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyMass)
+//        let predicate = HKQuery.predicateForSamplesWithStartDate(startDate,
+//            endDate: endDate, options: .None)
+//        
+//        let query = HKSampleQuery(sampleType: weightSampleType, predicate: predicate,
+//            limit: 0, sortDescriptors: nil, resultsHandler: {
+//                (query, results, error) in
+//                if !results {
+//                    println("There was an error running the query: \(error)")
+//                }
+//                dispatch_async(dispatch_get_main_queue()) {
+//                    self.weightSamples = results as! [HKQuantitySample]
+//                    self.tableView.reloadData()
+//                }
+//        })
+//        self.healthStore?.executeQuery(query)
+//    }
 }
