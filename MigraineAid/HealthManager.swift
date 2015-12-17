@@ -47,8 +47,6 @@ class HealthManager {
         let startDate = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -1, toDate: endDate, options: [])
         
         // Our search predicate which will fetch data from now until a day ago
-        // (Note, 1.day comes from an extension
-        // You'll want to change that to your own NSDate
         let predicate = HKQuery.predicateForSamplesWithStartDate(startDate, endDate: NSDate(), options: .None)
         
         // The actual HealthKit Query which will fetch all of the steps and sub them up for us.
