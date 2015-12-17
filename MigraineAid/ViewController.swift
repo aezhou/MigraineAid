@@ -10,6 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 import Parse
+import HealthKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     
@@ -119,8 +120,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                     let stepObject = PFObject(className: "StepObject")
                     stepObject["user"] = PFUser.currentUser()
                     stepObject["timestamp"] = result.startDate
-                    stepObject["quantity"] = result.quantity as Int
-
+                    stepObject["quantity"] = result.quantity.doubleValueForUnit(HKUnit.countUnit())
                     stepObjects.append(stepObject)
                 }
                 PFObject.saveAllInBackground(stepObjects)
