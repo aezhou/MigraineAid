@@ -8,6 +8,7 @@
 
 import Foundation
 import HealthKit
+import Parse
 
 class HealthManager {
     let healthStore: HKHealthStore? = {
@@ -17,6 +18,8 @@ class HealthManager {
             return nil
         }
     }()
+    
+    let stepCountIdentifier = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)
     
     func authorizeHealthKit(completion: ((success:Bool, error:NSError!) -> Void)!)
     {
@@ -39,6 +42,75 @@ class HealthManager {
         }
     }
     
+    func observeStepQuantityType() {
+        if let stepType = stepCountIdentifier,  healthStore = self.healthStore {
+            print("observe step quantity type")
+            
+            let query: HKObserverQuery = HKObserverQuery(sampleType: stepType, predicate: nil, updateHandler: self.stepCountChangedHandler)
+            
+            healthStore.executeQuery(query)
+            
+            healthStore.enableBackgroundDeliveryForType(stepType, frequency: HKUpdateFrequency.Immediate, withCompletion: {(succeeded: Bool, error: NSError?) in
+                
+                if succeeded{
+                    print("Enabled background delivery of step count changes")
+                } else {
+                    if let theError = error{
+                        print("Failed to enable background delivery of step count changes. ")
+                        print("Error = \(theError)")
+                    }
+                }
+            })
+        }
+    }
+    
+    func stepCountChangedHandler(query: HKObserverQuery, completionHandler: HKObserverQueryCompletionHandler, error: NSError? ) {
+        completionHandler()
+        print("in step count change handler")
+        
+        if let stepType = stepCountIdentifier, healthStore = healthStore {
+            let anchor = NSUserDefaults.standardUserDefaults().integerForKey("stepAnchor")
+            print(anchor)
+            let query = HKAnchoredObjectQuery(type: stepType, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
+                
+                guard let samples = newSamples as? [HKQuantitySample] else {
+                    // Add proper error handling here...
+                    print("*** Unable to query for step counts: \(error?.localizedDescription) ***")
+                    abort()
+                }
+                NSUserDefaults.standardUserDefaults().setInteger(newAnchor, forKey: "stepAnchor")
+                print("new anchor for step count is ", NSUserDefaults.standardUserDefaults().integerForKey("stepAnchor"))
+                
+                if samples.count > 0 {
+                    print("making parse objects: ", samples.count)
+                    var stepObjects = [PFObject]()
+                    for sample in samples {
+                        let stepObject = PFObject(className: "StepObject")
+                        stepObject["user"] = PFUser.currentUser()
+                        stepObject["timestamp"] = sample.startDate
+                        stepObject["quantity"] = sample.quantity.doubleValueForUnit(HKUnit.countUnit())
+                        stepObjects.append(stepObject)
+                    }
+//                    PFObject.saveAllInBackground(stepObjects)
+                    PFObject.saveAllInBackground(stepObjects) { (success, error) -> Void in
+                        
+                        if success {
+                            print("successfully saved")
+                        } else {
+                            print("*** unable to save: \(error?.localizedDescription) ***")
+                        }
+                        
+                    }
+                    print("saving object")
+                } else {
+                    print("no samples")
+                }
+                print("Done!")
+            }
+            healthStore.executeQuery(query)
+        }
+    }
+    
     func recentSteps(completion: ([HKQuantitySample]?, NSError?) -> () )
     {
         // The type of data we are requesting (this is redundant and could probably be an enumeration
@@ -50,11 +122,11 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamplesWithStartDate(startDate, endDate: NSDate(), options: .None)
         
         // The actual HealthKit Query which will fetch all of the steps and sub them up for us.
-        if let stepType = type {
+        if let stepType = type,  healthStore = self.healthStore {
             let query = HKSampleQuery(sampleType: stepType, predicate: predicate, limit: 0, sortDescriptors: nil) { query, results, error in
                 completion(results as? [HKQuantitySample], error)
             }
-            self.healthStore?.executeQuery(query)
+            healthStore.executeQuery(query)
         }
         
     }
