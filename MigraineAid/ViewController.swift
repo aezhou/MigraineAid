@@ -10,12 +10,14 @@ import UIKit
 import CoreLocation
 import MapKit
 import Parse
+import HealthKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet var tableView : UITableView!
     let basicCellIdentifier = "BasicCell"
 
+    let healthManager:HealthManager = HealthManager()
     
     var locations = [CLLocation]()
     
@@ -32,6 +34,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         // Do any additional setup after loading the view, typically from a nib.
         
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        if (PFUser.currentUser() != nil) {
+            healthManager.authorizeHealthKit { (authorized,  error) -> Void in
+                if authorized {
+                    print("HealthKit authorization received.")
+                } else {
+                    print("HealthKit authorization denied!")
+                    print("error: ", error)
+                }
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -97,6 +112,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         }
     }
     
+    @IBAction func sendStepData(sender: AnyObject) {
+        healthManager.recentSteps() { results, error in
+            if results?.count > 0 {
+                var stepObjects = [PFObject]()
+                for result in results! {
+                    let stepObject = PFObject(className: "StepObject")
+                    stepObject["user"] = PFUser.currentUser()
+                    stepObject["timestamp"] = result.startDate
+                    stepObject["quantity"] = result.quantity.doubleValueForUnit(HKUnit.countUnit())
+                    stepObjects.append(stepObject)
+                }
+                PFObject.saveAllInBackground(stepObjects)
+            } else {
+                print("no steps!");
+                print("error: ", error);
+            }
+        }
+    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return locations.count
         
@@ -108,7 +142,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         cell.locationlabel.text = String(format: "%.4f, %.4f", arguments: [locations[indexPath.row].coordinate.latitude, locations[indexPath.row].coordinate.longitude])
         return cell
     }
-    
+
 }
 
 
