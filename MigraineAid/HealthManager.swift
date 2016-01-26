@@ -70,6 +70,7 @@ class HealthManager {
         
         if let stepType = stepCountIdentifier, healthStore = healthStore {
             let anchor = NSUserDefaults.standardUserDefaults().integerForKey("stepAnchor")
+            // TODO: make sure that initial anchor value of 0 is actually ok
             print(anchor)
             let query = HKAnchoredObjectQuery(type: stepType, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
                 
@@ -81,7 +82,7 @@ class HealthManager {
                 NSUserDefaults.standardUserDefaults().setInteger(newAnchor, forKey: "stepAnchor")
                 print("new anchor for step count is ", NSUserDefaults.standardUserDefaults().integerForKey("stepAnchor"))
                 
-                if samples.count > 0 {
+                if samples.count > 0 && anchor != 0  {
                     print("making parse objects: ", samples.count)
                     var stepObjects = [PFObject]()
                     for sample in samples {
@@ -91,7 +92,6 @@ class HealthManager {
                         stepObject["quantity"] = sample.quantity.doubleValueForUnit(HKUnit.countUnit())
                         stepObjects.append(stepObject)
                     }
-//                    PFObject.saveAllInBackground(stepObjects)
                     PFObject.saveAllInBackground(stepObjects) { (success, error) -> Void in
                         
                         if success {
