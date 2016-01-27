@@ -19,15 +19,20 @@ class HealthManager {
         }
     }()
     
+    typealias observerUpdateCompletionHandler = (HKObserverQuery, HKObserverQueryCompletionHandler, NSError?) -> ()
+    
     let stepCountIdentifier = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)
+    let heartRateIdentifier = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierHeartRate)
+    let basalEnergyIdentifier = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBasalEnergyBurned)
+    let activeEnergyIdentifier = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierActiveEnergyBurned)
     
     func authorizeHealthKit(completion: ((success:Bool, error:NSError!) -> Void)!)
     {
-        let healthKitTypesToRead: Set = [HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBasalEnergyBurned)!, HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierActiveEnergyBurned)!, HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierHeartRate)!, HKObjectType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis)!, HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)!, HKObjectType.workoutType()]
+        let healthKitTypesToRead: Set = [basalEnergyIdentifier!, activeEnergyIdentifier!, heartRateIdentifier!, HKObjectType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis)!, stepCountIdentifier!, HKObjectType.workoutType()]
         
         if !HKHealthStore.isHealthDataAvailable()
         {
-            let error = NSError(domain: "com.aezhou.migrainAid", code: 2, userInfo: [NSLocalizedDescriptionKey:"HealthKit is not available in this Device"])
+            let error = NSError(domain: "com.aezhou.migraineAid", code: 2, userInfo: [NSLocalizedDescriptionKey:"HealthKit is not available in this Device"])
             if( completion != nil )
             {
                 completion(success:false, error:error)
@@ -42,21 +47,30 @@ class HealthManager {
         }
     }
     
-    func observeStepQuantityType() {
-        if let stepType = stepCountIdentifier,  healthStore = self.healthStore {
-            print("observe step quantity type")
-            
-            let query: HKObserverQuery = HKObserverQuery(sampleType: stepType, predicate: nil, updateHandler: self.stepCountChangedHandler)
+    func observeAllQuantities() {
+
+        let hkQuantityTypes: [HKQuantityType : observerUpdateCompletionHandler] = [
+            stepCountIdentifier! : self.stepCountChangedHandler
+        ]
+        
+        for entry in hkQuantityTypes {
+            observeQuantity(entry.0, completionHandler: entry.1)
+        }
+    }
+    
+    func observeQuantity(type : HKQuantityType, completionHandler: observerUpdateCompletionHandler) {
+        if let healthStore = self.healthStore {
+            let query: HKObserverQuery = HKObserverQuery(sampleType: type, predicate: nil, updateHandler: completionHandler)
             
             healthStore.executeQuery(query)
             
-            healthStore.enableBackgroundDeliveryForType(stepType, frequency: HKUpdateFrequency.Immediate, withCompletion: {(succeeded: Bool, error: NSError?) in
+            healthStore.enableBackgroundDeliveryForType(type, frequency: HKUpdateFrequency.Immediate, withCompletion: {(succeeded: Bool, error: NSError?) in
                 
                 if succeeded{
-                    print("Enabled background delivery of step count changes")
+                    print("Enabled background delivery of changes of ", type)
                 } else {
                     if let theError = error{
-                        print("Failed to enable background delivery of step count changes. ")
+                        print("Failed to enable background delivery of changes of ", type)
                         print("Error = \(theError)")
                     }
                 }
