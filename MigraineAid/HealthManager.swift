@@ -47,7 +47,7 @@ class HealthManager {
         }
     }
     
-    func observeAllQuantities() {
+    func observeAllChanges() {
 
         let hkQuantityTypes: [HKQuantityType : observerUpdateCompletionHandler] = [
             stepCountIdentifier! : self.stepCountChangedHandler,
@@ -57,11 +57,11 @@ class HealthManager {
         ]
         
         for entry in hkQuantityTypes {
-            observeQuantity(entry.0, completionHandler: entry.1)
+            observeChange(entry.0, completionHandler: entry.1)
         }
     }
     
-    func observeQuantity(type : HKQuantityType, completionHandler: observerUpdateCompletionHandler) {
+    func observeChange(type : HKSampleType, completionHandler: observerUpdateCompletionHandler) {
         if let healthStore = self.healthStore {
             let query: HKObserverQuery = HKObserverQuery(sampleType: type, predicate: nil, updateHandler: completionHandler)
             
