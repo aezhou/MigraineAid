@@ -63,6 +63,7 @@ class HealthManager {
         }
         
         observeChange(sleepAnalysisIdentifier!, completionHandler: self.sleepAnalysisChangedHandler)
+        observeChange(workoutTypeIdentifier, completionHandler: self.workoutChangedHandler)
     }
     
     func observeChange(type : HKSampleType, completionHandler: observerUpdateCompletionHandler) {
@@ -321,7 +322,58 @@ class HealthManager {
         }
     }
 
-    func recentSteps(completion: ([HKCategorySample]?, NSError?) -> () )
+    func workoutChangedHandler(query: HKObserverQuery, completionHandler: HKObserverQueryCompletionHandler, error: NSError? ) {
+        completionHandler()
+        print("in workout change handler")
+        
+        if let sleepAnalysisType = sleepAnalysisIdentifier, healthStore = healthStore {
+            let anchor = NSUserDefaults.standardUserDefaults().integerForKey("workoutAnchor")
+            // TODO: make sure that initial anchor value of 0 is actually ok
+            print(anchor)
+            let query = HKAnchoredObjectQuery(type: sleepAnalysisType, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
+                
+                guard let samples = newSamples as? [HKWorkout] else {
+                    // Add proper error handling here...
+                    print("*** Unable to query for workout: \(error?.localizedDescription) ***")
+                    abort()
+                }
+                NSUserDefaults.standardUserDefaults().setInteger(newAnchor, forKey: "workoutAnchor")
+                print("new anchor for workout is ", NSUserDefaults.standardUserDefaults().integerForKey("workoutAnchor"))
+                
+                if samples.count > 0 && anchor != 0  {
+                    print("making parse objects: ", samples.count)
+                    var workoutObjects = [PFObject]()
+                    for sample in samples {
+                        let workoutObject = PFObject(className: "workoutObject")
+                        workoutObject["user"] = PFUser.currentUser()
+                        workoutObject["startDate"] = sample.startDate
+                        workoutObject["duration"] = sample.duration/60.0
+                        if let totalEnergy = sample.totalEnergyBurned {
+                            workoutObject["totalEnergyBurned"] = totalEnergy.doubleValueForUnit(HKUnit(fromString: "kcal"))
+                        }
+                        workoutObject["type"] = sample.workoutActivityType.rawValue // 52 = walking, 37 = running, 13 = cycling
+                        workoutObjects.append(workoutObject)
+                    }
+                    PFObject.saveAllInBackground(workoutObjects) { (success, error) -> Void in
+                        
+                        if success {
+                            print("successfully saved")
+                        } else {
+                            print("*** unable to save: \(error?.localizedDescription) ***")
+                        }
+                        
+                    }
+                    print("saving object")
+                } else {
+                    print("no samples")
+                }
+                print("Done!")
+            }
+            healthStore.executeQuery(query)
+        }
+    }
+    
+    func recentSteps(completion: ([HKWorkout]?, NSError?) -> () )
     {
         // The type of data we are requesting (this is redundant and could probably be an enumeration
         let type = HKSampleType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)
