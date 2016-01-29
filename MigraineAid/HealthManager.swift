@@ -384,9 +384,9 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamplesWithStartDate(startDate, endDate: NSDate(), options: .None)
         
         // The actual HealthKit Query which will fetch all of the steps and sub them up for us.
-        if let stepType = type,  healthStore = self.healthStore {
-            let query = HKSampleQuery(sampleType: stepType, predicate: predicate, limit: 0, sortDescriptors: nil) { query, results, error in
-                completion(results as? [HKQuantitySample], error)
+        if let healthStore = self.healthStore {
+            let query = HKSampleQuery(sampleType: workoutTypeIdentifier, predicate: predicate, limit: 0, sortDescriptors: nil) { query, results, error in
+                completion(results as? [HKWorkout], error)
             }
             healthStore.executeQuery(query)
         }
