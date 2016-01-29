@@ -248,7 +248,7 @@ class HealthManager {
                     print("making parse objects: ", samples.count)
                     var basalEnergyObjects = [PFObject]()
                     for sample in samples {
-                        let basalEnergyObject = PFObject(className: "basalEnergyAnchor")
+                        let basalEnergyObject = PFObject(className: "basalEnergyObject")
                         basalEnergyObject["user"] = PFUser.currentUser()
                         basalEnergyObject["timestamp"] = sample.startDate
                         basalEnergyObject["quantity"] = sample.quantity.doubleValueForUnit(HKUnit(fromString: "kcal"))
@@ -289,13 +289,13 @@ class HealthManager {
                     abort()
                 }
                 NSUserDefaults.standardUserDefaults().setInteger(newAnchor, forKey: "sleepAnalysisAnchor")
-                print("new anchor for basal energy is ", NSUserDefaults.standardUserDefaults().integerForKey("sleepAnalysisAnchor"))
+                print("new anchor for sleep analysis is ", NSUserDefaults.standardUserDefaults().integerForKey("sleepAnalysisAnchor"))
                 
                 if samples.count > 0 && anchor != 0  {
                     print("making parse objects: ", samples.count)
                     var sleepAnalysisObjects = [PFObject]()
                     for sample in samples {
-                        let sleepAnalysisObject = PFObject(className: "sleepAnalysisAnchor")
+                        let sleepAnalysisObject = PFObject(className: "sleepAnalysisObject")
                         sleepAnalysisObject["user"] = PFUser.currentUser()
                         sleepAnalysisObject["startDate"] = sample.startDate
                         sleepAnalysisObject["endDate"] = sample.endDate
