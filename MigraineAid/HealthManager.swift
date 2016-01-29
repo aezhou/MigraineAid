@@ -326,11 +326,11 @@ class HealthManager {
         completionHandler()
         print("in workout change handler")
         
-        if let sleepAnalysisType = sleepAnalysisIdentifier, healthStore = healthStore {
+        if let healthStore = healthStore {
             let anchor = NSUserDefaults.standardUserDefaults().integerForKey("workoutAnchor")
             // TODO: make sure that initial anchor value of 0 is actually ok
             print(anchor)
-            let query = HKAnchoredObjectQuery(type: sleepAnalysisType, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
+            let query = HKAnchoredObjectQuery(type: workoutTypeIdentifier, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
                 
                 guard let samples = newSamples as? [HKWorkout] else {
                     // Add proper error handling here...
