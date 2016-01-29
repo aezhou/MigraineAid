@@ -25,10 +25,12 @@ class HealthManager {
     let heartRateIdentifier = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierHeartRate)
     let basalEnergyIdentifier = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBasalEnergyBurned)
     let activeEnergyIdentifier = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierActiveEnergyBurned)
+    let sleepAnalysisIdentifier = HKObjectType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis)
+    let workoutTypeIdentifier = HKObjectType.workoutType()
     
     func authorizeHealthKit(completion: ((success:Bool, error:NSError!) -> Void)!)
     {
-        let healthKitTypesToRead: Set = [basalEnergyIdentifier!, activeEnergyIdentifier!, heartRateIdentifier!, HKObjectType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis)!, stepCountIdentifier!, HKObjectType.workoutType()]
+        let healthKitTypesToRead: Set = [basalEnergyIdentifier!, activeEnergyIdentifier!, heartRateIdentifier!, sleepAnalysisIdentifier!, stepCountIdentifier!, workoutTypeIdentifier]
         
         if !HKHealthStore.isHealthDataAvailable()
         {
@@ -59,6 +61,8 @@ class HealthManager {
         for entry in hkQuantityTypes {
             observeChange(entry.0, completionHandler: entry.1)
         }
+        
+        observeChange(sleepAnalysisIdentifier!, completionHandler: self.sleepAnalysisChangedHandler)
     }
     
     func observeChange(type : HKSampleType, completionHandler: observerUpdateCompletionHandler) {
@@ -269,12 +273,60 @@ class HealthManager {
         }
     }
     
-    func recentSteps(completion: ([HKQuantitySample]?, NSError?) -> () )
+    func sleepAnalysisChangedHandler(query: HKObserverQuery, completionHandler: HKObserverQueryCompletionHandler, error: NSError? ) {
+        completionHandler()
+        print("in sleep analysis change handler")
+        
+        if let sleepAnalysisType = sleepAnalysisIdentifier, healthStore = healthStore {
+            let anchor = NSUserDefaults.standardUserDefaults().integerForKey("sleepAnalysisAnchor")
+            // TODO: make sure that initial anchor value of 0 is actually ok
+            print(anchor)
+            let query = HKAnchoredObjectQuery(type: sleepAnalysisType, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
+                
+                guard let samples = newSamples as? [HKCategorySample] else {
+                    // Add proper error handling here...
+                    print("*** Unable to query for sleep analysis: \(error?.localizedDescription) ***")
+                    abort()
+                }
+                NSUserDefaults.standardUserDefaults().setInteger(newAnchor, forKey: "sleepAnalysisAnchor")
+                print("new anchor for basal energy is ", NSUserDefaults.standardUserDefaults().integerForKey("sleepAnalysisAnchor"))
+                
+                if samples.count > 0 && anchor != 0  {
+                    print("making parse objects: ", samples.count)
+                    var sleepAnalysisObjects = [PFObject]()
+                    for sample in samples {
+                        let sleepAnalysisObject = PFObject(className: "sleepAnalysisAnchor")
+                        sleepAnalysisObject["user"] = PFUser.currentUser()
+                        sleepAnalysisObject["startDate"] = sample.startDate
+                        sleepAnalysisObject["endDate"] = sample.endDate
+                        sleepAnalysisObject["type"] = sample.value // 1 = asleep, 0 = in bed
+                        sleepAnalysisObjects.append(sleepAnalysisObject)
+                    }
+                    PFObject.saveAllInBackground(sleepAnalysisObjects) { (success, error) -> Void in
+                        
+                        if success {
+                            print("successfully saved")
+                        } else {
+                            print("*** unable to save: \(error?.localizedDescription) ***")
+                        }
+                        
+                    }
+                    print("saving object")
+                } else {
+                    print("no samples")
+                }
+                print("Done!")
+            }
+            healthStore.executeQuery(query)
+        }
+    }
+
+    func recentSteps(completion: ([HKCategorySample]?, NSError?) -> () )
     {
         // The type of data we are requesting (this is redundant and could probably be an enumeration
         let type = HKSampleType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)
         let endDate = NSDate()
-        let startDate = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -1, toDate: endDate, options: [])
+        let startDate = NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -7, toDate: endDate, options: [])
         
         // Our search predicate which will fetch data from now until a day ago
         let predicate = HKQuery.predicateForSamplesWithStartDate(startDate, endDate: NSDate(), options: .None)
