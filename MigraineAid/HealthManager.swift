@@ -50,7 +50,10 @@ class HealthManager {
     func observeAllQuantities() {
 
         let hkQuantityTypes: [HKQuantityType : observerUpdateCompletionHandler] = [
-            stepCountIdentifier! : self.stepCountChangedHandler
+            stepCountIdentifier! : self.stepCountChangedHandler,
+            heartRateIdentifier! : self.hrChangedHandler,
+            basalEnergyIdentifier! : self.basalEnergyChangedHandler,
+            activeEnergyIdentifier! : self.activeEnergyChangedHandler
         ]
         
         for entry in hkQuantityTypes {
@@ -107,6 +110,147 @@ class HealthManager {
                         stepObjects.append(stepObject)
                     }
                     PFObject.saveAllInBackground(stepObjects) { (success, error) -> Void in
+                        
+                        if success {
+                            print("successfully saved")
+                        } else {
+                            print("*** unable to save: \(error?.localizedDescription) ***")
+                        }
+                        
+                    }
+                    print("saving object")
+                } else {
+                    print("no samples")
+                }
+                print("Done!")
+            }
+            healthStore.executeQuery(query)
+        }
+    }
+
+    func hrChangedHandler(query: HKObserverQuery, completionHandler: HKObserverQueryCompletionHandler, error: NSError? ) {
+        completionHandler()
+        print("in HR change handler")
+        
+        if let hrType = heartRateIdentifier, healthStore = healthStore {
+            let anchor = NSUserDefaults.standardUserDefaults().integerForKey("hrAnchor")
+            // TODO: make sure that initial anchor value of 0 is actually ok
+            print(anchor)
+            let query = HKAnchoredObjectQuery(type: hrType, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
+                
+                guard let samples = newSamples as? [HKQuantitySample] else {
+                    // Add proper error handling here...
+                    print("*** Unable to query for HR: \(error?.localizedDescription) ***")
+                    abort()
+                }
+                NSUserDefaults.standardUserDefaults().setInteger(newAnchor, forKey: "hrAnchor")
+                print("new anchor for HR is ", NSUserDefaults.standardUserDefaults().integerForKey("hrAnchor"))
+                
+                if samples.count > 0 && anchor != 0  {
+                    print("making parse objects: ", samples.count)
+                    var hrObjects = [PFObject]()
+                    for sample in samples {
+                        let hrObject = PFObject(className: "HRObject")
+                        hrObject["user"] = PFUser.currentUser()
+                        hrObject["timestamp"] = sample.startDate
+                        hrObject["quantity"] = sample.quantity.doubleValueForUnit(HKUnit(fromString: "count/min"))
+                        hrObjects.append(hrObject)
+                    }
+                    PFObject.saveAllInBackground(hrObjects) { (success, error) -> Void in
+                        
+                        if success {
+                            print("successfully saved")
+                        } else {
+                            print("*** unable to save: \(error?.localizedDescription) ***")
+                        }
+                        
+                    }
+                    print("saving object")
+                } else {
+                    print("no samples")
+                }
+                print("Done!")
+            }
+            healthStore.executeQuery(query)
+        }
+    }
+    
+    func activeEnergyChangedHandler(query: HKObserverQuery, completionHandler: HKObserverQueryCompletionHandler, error: NSError? ) {
+        completionHandler()
+        print("in active energy change handler")
+        
+        if let activeEnergyType = activeEnergyIdentifier, healthStore = healthStore {
+            let anchor = NSUserDefaults.standardUserDefaults().integerForKey("activeEnergyAnchor")
+            // TODO: make sure that initial anchor value of 0 is actually ok
+            print(anchor)
+            let query = HKAnchoredObjectQuery(type: activeEnergyType, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
+                
+                guard let samples = newSamples as? [HKQuantitySample] else {
+                    // Add proper error handling here...
+                    print("*** Unable to query for active energy: \(error?.localizedDescription) ***")
+                    abort()
+                }
+                NSUserDefaults.standardUserDefaults().setInteger(newAnchor, forKey: "activeEnergyAnchor")
+                print("new anchor for active energy is ", NSUserDefaults.standardUserDefaults().integerForKey("activeEnergyAnchor"))
+                
+                if samples.count > 0 && anchor != 0  {
+                    print("making parse objects: ", samples.count)
+                    var activeEnergyObjects = [PFObject]()
+                    for sample in samples {
+                        let activeEnergyObject = PFObject(className: "activeEnergyObject")
+                        activeEnergyObject["user"] = PFUser.currentUser()
+                        activeEnergyObject["timestamp"] = sample.startDate
+                        activeEnergyObject["quantity"] = sample.quantity.doubleValueForUnit(HKUnit(fromString: "kcal"))
+                        activeEnergyObjects.append(activeEnergyObject)
+                    }
+                    PFObject.saveAllInBackground(activeEnergyObjects) { (success, error) -> Void in
+                        
+                        if success {
+                            print("successfully saved")
+                        } else {
+                            print("*** unable to save: \(error?.localizedDescription) ***")
+                        }
+                        
+                    }
+                    print("saving object")
+                } else {
+                    print("no samples")
+                }
+                print("Done!")
+            }
+            healthStore.executeQuery(query)
+        }
+    }
+
+    func basalEnergyChangedHandler(query: HKObserverQuery, completionHandler: HKObserverQueryCompletionHandler, error: NSError? ) {
+        completionHandler()
+        print("in basal energy change handler")
+        
+        if let basalEnergyType = basalEnergyIdentifier, healthStore = healthStore {
+            let anchor = NSUserDefaults.standardUserDefaults().integerForKey("basalEnergyAnchor")
+            // TODO: make sure that initial anchor value of 0 is actually ok
+            print(anchor)
+            let query = HKAnchoredObjectQuery(type: basalEnergyType, predicate: nil, anchor: anchor, limit: Int(HKObjectQueryNoLimit)) { (query, newSamples, newAnchor, error) -> Void in
+                
+                guard let samples = newSamples as? [HKQuantitySample] else {
+                    // Add proper error handling here...
+                    print("*** Unable to query for basal energy: \(error?.localizedDescription) ***")
+                    abort()
+                }
+                NSUserDefaults.standardUserDefaults().setInteger(newAnchor, forKey: "basalEnergyAnchor")
+                print("new anchor for basal energy is ", NSUserDefaults.standardUserDefaults().integerForKey("basalEnergyAnchor"))
+                
+                if samples.count > 0 && anchor != 0  {
+                    print("making parse objects: ", samples.count)
+                    var basalEnergyObjects = [PFObject]()
+                    for sample in samples {
+                        let basalEnergyObject = PFObject(className: "basalEnergyAnchor")
+                        basalEnergyObject["user"] = PFUser.currentUser()
+                        basalEnergyObject["timestamp"] = sample.startDate
+                        basalEnergyObject["quantity"] = sample.quantity.doubleValueForUnit(HKUnit(fromString: "kcal"))
+                        basalEnergyObjects.append(basalEnergyObject)
+                    }
+                    PFObject.saveAllInBackground(basalEnergyObjects) { (success, error) -> Void in
                         
                         if success {
                             print("successfully saved")
