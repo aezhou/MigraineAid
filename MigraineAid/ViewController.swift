@@ -113,22 +113,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     }
     
     @IBAction func sendStepData(sender: AnyObject) {
-        healthManager.recentSteps() { results, error in
-            if results?.count > 0 {
-                var stepObjects = [PFObject]()
-                for result in results! {
-                    let stepObject = PFObject(className: "StepObject")
-                    stepObject["user"] = PFUser.currentUser()
-                    stepObject["timestamp"] = result.startDate
-                    stepObject["quantity"] = result.quantity.doubleValueForUnit(HKUnit.countUnit())
-                    stepObjects.append(stepObject)
-                }
-                PFObject.saveAllInBackground(stepObjects)
-            } else {
-                print("no steps!");
-                print("error: ", error);
-            }
-        }
+//        healthManager.recentSteps() { results, error in
+//            if results?.count > 0 {
+////                var stepObjects = [PFObject]()
+//                for result in results! {
+//                    print(result.startDate)
+//                    print(result.totalEnergyBurned)
+//                    print(result.duration/60.0)
+//                    print(result.workoutActivityType.hashValue)
+//                    print(result.workoutActivityType.rawValue)
+//                    HKUnit.kilocalorieUnit()
+////                    let stepObject = PFObject(className: "StepObject")
+////                    stepObject["user"] = PFUser.currentUser()
+////                    stepObject["timestamp"] = result.startDate
+////                    stepObject["quantity"] = result.quantity.doubleValueForUnit(HKUnit.countUnit())
+////                    stepObjects.append(stepObject)
+//                }
+////                PFObject.saveAllInBackground(stepObjects)
+//            } else {
+//                print("no steps!");
+//                print("error: ", error);
+//            }
+//        }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
