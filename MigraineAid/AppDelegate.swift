@@ -31,7 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // [Optional] Track statistics around application opens.
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
-        healthManager.observeAllChanges()
+        if (PFUser.currentUser() != nil) {
+            healthManager.observeAllChanges()
+        }
         
         return true
     }
