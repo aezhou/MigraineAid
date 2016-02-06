@@ -9,15 +9,23 @@
 import UIKit
 import Parse
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
     override func viewDidLoad() {
         // Do any additional setup after loading the view.
+        usernameTextField.delegate = self
+        usernameTextField.returnKeyType = UIReturnKeyType.Next
+        passwordTextField.delegate = self
+        passwordTextField.returnKeyType = UIReturnKeyType.Send
     }
     
     @IBAction func signInTapped(sender: AnyObject) {
+        login()
+    }
+    
+    func login() {
         let username = self.usernameTextField.text!
         let password = self.passwordTextField.text!
         
@@ -63,6 +71,26 @@ class LoginViewController: UIViewController {
                     self.presentViewController(alertController, animated: true, completion: nil)
                 }
             })
+        }
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if textField == self.passwordTextField {
+            textField.resignFirstResponder()
+            
+            login()
+        } else if textField == self.usernameTextField {
+            self.passwordTextField.becomeFirstResponder()
+        }
+        return true
+    }
+    
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        if string == "/n" {
+            textField.resignFirstResponder()
+            return false
+        } else {
+            return true
         }
     }
     
