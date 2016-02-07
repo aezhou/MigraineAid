@@ -16,9 +16,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         // Do any additional setup after loading the view.
         usernameTextField.delegate = self
-        usernameTextField.returnKeyType = UIReturnKeyType.Next
+        usernameTextField.returnKeyType = .Next
         passwordTextField.delegate = self
-        passwordTextField.returnKeyType = UIReturnKeyType.Send
+        passwordTextField.returnKeyType = .Send
+        let tap = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        self.view.addGestureRecognizer(tap)
     }
     
     @IBAction func signInTapped(sender: AnyObject) {
@@ -77,7 +79,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == self.passwordTextField {
             textField.resignFirstResponder()
-            
             login()
         } else if textField == self.usernameTextField {
             self.passwordTextField.becomeFirstResponder()
@@ -85,13 +86,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        if string == "/n" {
-            textField.resignFirstResponder()
-            return false
-        } else {
-            return true
-        }
+    func dismissKeyboard() {
+        self.emailTextField.resignFirstResponder()
+        self.usernameTextField.resignFirstResponder()
+        self.passwordTextField.resignFirstResponder()
     }
     
     override func didReceiveMemoryWarning() {
