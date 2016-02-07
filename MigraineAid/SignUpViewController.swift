@@ -9,16 +9,29 @@
 import UIKit
 import Parse
 
-class SignUpViewController: UIViewController {
+class SignUpViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
     override func viewDidLoad() {
         // Do any additional setup after loading the view.
+        emailTextField.delegate = self
+        emailTextField.returnKeyType = .Next
+        usernameTextField.delegate = self
+        usernameTextField.returnKeyType = .Next
+        passwordTextField.delegate = self
+        passwordTextField.returnKeyType = .Send
+        
+        let tap = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        self.view.addGestureRecognizer(tap)
     }
     
     @IBAction func signUpTapped(sender: AnyObject) {
+        createAccount()
+    }
+    
+    func createAccount() {
         let username = self.usernameTextField.text!
         let password = self.passwordTextField.text!
         let email = self.emailTextField.text!
@@ -87,6 +100,23 @@ class SignUpViewController: UIViewController {
         self.dismissViewControllerAnimated(false, completion: nil)
     }
     
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if textField == self.passwordTextField {
+            textField.resignFirstResponder()
+            createAccount()
+        } else if textField == self.usernameTextField {
+            self.passwordTextField.becomeFirstResponder()
+        } else if textField == self.emailTextField {
+            self.usernameTextField.becomeFirstResponder()
+        }
+        return true
+    }
+    
+    func dismissKeyboard() {
+        self.emailTextField.resignFirstResponder()
+        self.usernameTextField.resignFirstResponder()
+        self.passwordTextField.resignFirstResponder()
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
